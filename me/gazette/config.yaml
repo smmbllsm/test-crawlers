@@ -1,0 +1,14 @@
+name: me_gazette
+description: Montenegrin gazette crawler
+schedule: monthly
+params:
+  urls:
+    index_url: http://www.sluzbenilist.me/OglasniDioOsnRezultati.aspx
+pipeline:
+  init: crawl_urls
+  crawl_urls:
+    method: me.gazette.crawl:crawl_urls
+    handle:
+      pass: crawl_record
+  crawl_record:
+    method: me.gazette.crawl:crawl_record

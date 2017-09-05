@@ -1,0 +1,45 @@
+name: zz_worldbank
+description: World Bank Stolen Asset Recovery Initiative
+schedule: monthly
+params:
+  delay: 2
+  seed_url: http://star.worldbank.org/corruption-cases/?db=All
+  remove_paths:
+    - .//script
+    - .//div[@id="bannerhome"]
+    - .//div[@class="return"]
+  crawl_rules:
+    and:
+      - or:
+        - pattern: http://star.worldbank.org/corruption-cases/.*
+        - mime_group: documents
+        - mime_group: archives
+      - not:
+          or:
+            - mime_group: assets
+            - mime_group: images
+            - pattern: .*sm_field_arw_jurisdiction.*
+            - pattern: .*sm_field_arw_asset_recovery_stat.*
+            - pattern: .*/star/.*
+            - pattern: .*/contact.*
+pipeline:
+  init: webcrawler
+  webcrawler:
+    method: webcrawler
+    handle:
+      pass: crawl
+  crawl:
+    method: crawl
+    handle:
+      retain: meta
+      pass: parse
+  parse:
+    method: parse
+    handle:
+      retain: crawl
+  meta:
+    method: meta
+    handle:
+      pass: aleph_emit
+  aleph_emit:
+    method: aleph_emit

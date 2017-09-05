@@ -1,0 +1,25 @@
+name: me_katastar
+description: Montenegrin land registry crawler
+schedule: monthly
+params:
+  urls:
+    login_url: http://213.149.105.120/ekatastar-web/action/login
+    elogin_url: http://213.149.105.120/ekatastar-web/action/elogin
+    nepo_url: http://213.149.105.120/ekatastar-web/action/search/katastarNepokretnosti
+    nepo_ajax: http://213.149.105.120/ekatastar-web/action/search/ajax/katastarNepokretnosti
+pipeline:
+  init: get_regions
+  get_regions:
+    method: me.katastar.crawl:get_regions
+    handle:
+      pass: scrape_items
+  scrape_items:
+    method: me.katastar.crawl:scrape_items
+    handle:
+      pass: scrape_brojs
+  scrape_brojs:
+    method: me.katastar.crawl:scrape_brojs
+    handle:
+      pass: scrape_parcel
+  scrape_parcel:
+    method: me.katastar.crawl:scrape_parcel
